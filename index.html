@@ -469,19 +469,19 @@
       width: 158px;
       height: 158px;
       place-items: center;
-      padding: 18px;
+      padding: 18px 18px 22px;
     }
 
     .widget.medium {
       width: 332px;
       height: 158px;
-      padding: 22px;
+      padding: 22px 24px 26px;
     }
 
     .widget.large {
       width: 332px;
       height: 332px;
-      padding: 24px;
+      padding: 24px 24px 30px;
     }
 
     .widget.lock {
@@ -543,6 +543,13 @@
       width: 100%;
     }
 
+    .widget.small .event-widget {
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
     .event-kicker {
       margin: 0 0 18px;
       color: var(--muted);
@@ -576,7 +583,8 @@
 
     .event-rail {
       height: 3px;
-      margin-top: 22px;
+      margin-top: auto;
+      margin-bottom: 2px;
       overflow: hidden;
       border-radius: 999px;
       background: var(--track);
@@ -671,7 +679,15 @@
     }
 
     .widget.large .moments {
-      margin-top: 20px;
+      margin-top: 22px;
+    }
+
+    .widget.large .moment {
+      padding: 13px 0;
+    }
+
+    .widget.large .moment:last-child {
+      padding-bottom: 3px;
     }
 
     .lock-arc {
