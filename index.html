@@ -437,10 +437,31 @@
     }
 
     .widget {
+      position: relative;
+      overflow: hidden;
       border: 1px solid rgba(36,35,31,0.08);
       border-radius: 28px;
       background: var(--surface);
       box-shadow: 0 18px 42px rgba(42, 37, 30, 0.08);
+    }
+
+    .widget::after {
+      content: "";
+      position: absolute;
+      inset: auto -24% -34% -24%;
+      height: 62%;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 35% 0%, rgba(53,50,44,0.045), transparent 54%),
+        linear-gradient(180deg, rgba(53,50,44,0), rgba(53,50,44,0.045));
+      border-radius: 45% 55% 0 0;
+      opacity: 0;
+      transform: translate3d(0, 8px, 0);
+    }
+
+    .widget.is-ambient::after {
+      animation: waterline 13s ease-in-out infinite;
+      opacity: 1;
     }
 
     .widget.small {
@@ -484,6 +505,12 @@
       place-items: center;
       border-radius: 50%;
       background: conic-gradient(var(--fill) calc(var(--year-progress, 34) * 1%), var(--track) 0);
+    }
+
+    .widget.is-ambient .mini-ring,
+    .widget.is-ambient .event-orbit,
+    .widget.is-ambient .lock-arc {
+      animation: breathe 8s ease-in-out infinite;
     }
 
     .mini-ring::before {
@@ -561,6 +588,22 @@
       height: 100%;
       border-radius: inherit;
       background: var(--fill);
+    }
+
+    .widget.is-ambient .event-rail span,
+    .widget.is-ambient .rail span {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .widget.is-ambient .event-rail span::after,
+    .widget.is-ambient .rail span::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(251,248,241,0.28), transparent);
+      transform: translateX(-120%);
+      animation: quiet-shimmer 9s ease-in-out infinite;
     }
 
     .event-orbit {
@@ -660,6 +703,51 @@
       margin-top: 2px;
       color: var(--muted);
       font-size: 10px;
+    }
+
+    @keyframes breathe {
+      0%, 100% {
+        filter: saturate(1);
+        transform: scale(1);
+      }
+
+      50% {
+        filter: saturate(0.88);
+        transform: scale(1.018);
+      }
+    }
+
+    @keyframes waterline {
+      0%, 100% {
+        border-radius: 45% 55% 0 0;
+        transform: translate3d(-1.5%, 9px, 0) rotate(-0.4deg);
+      }
+
+      50% {
+        border-radius: 58% 42% 0 0;
+        transform: translate3d(1.5%, 1px, 0) rotate(0.4deg);
+      }
+    }
+
+    @keyframes quiet-shimmer {
+      0%, 58%, 100% {
+        transform: translateX(-120%);
+      }
+
+      78% {
+        transform: translateX(120%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .widget.is-ambient::after,
+      .widget.is-ambient .mini-ring,
+      .widget.is-ambient .event-orbit,
+      .widget.is-ambient .lock-arc,
+      .widget.is-ambient .event-rail span::after,
+      .widget.is-ambient .rail span::after {
+        animation: none;
+      }
     }
 
     @media (max-width: 1160px) {
@@ -856,7 +944,7 @@
         <div class="widget-grid">
           <article>
             <p class="mock-label">Small · systemSmall</p>
-            <div class="widget small">
+            <div class="widget small is-ambient">
               <div class="event-widget" style="--event-progress: 62">
                 <p class="event-kicker">Birthday</p>
                 <p class="event-title">Maya turns 8</p>
@@ -868,7 +956,7 @@
 
           <article>
             <p class="mock-label">Small · systemSmall</p>
-            <div class="widget small">
+            <div class="widget small is-ambient">
               <div class="event-widget" style="--event-progress: 23">
                 <p class="event-kicker">Trip</p>
                 <p class="event-title">Kyoto</p>
@@ -880,7 +968,7 @@
 
           <article class="span-wide">
             <p class="mock-label">Medium · systemMedium</p>
-            <div class="widget medium event-medium">
+            <div class="widget medium event-medium is-ambient">
               <div>
                 <p class="event-kicker">School</p>
                 <p class="event-title">First day of school</p>
@@ -893,7 +981,7 @@
 
           <article class="span-wide">
             <p class="mock-label">Large · systemLarge</p>
-            <div class="widget large">
+            <div class="widget large is-ambient">
               <div class="large-header">
                 <div>
                   <p class="event-kicker">Upcoming</p>
@@ -912,7 +1000,7 @@
 
           <article class="span-wide">
             <p class="mock-label">Lock · accessoryRectangular</p>
-            <div class="widget lock">
+            <div class="widget lock is-ambient">
               <div class="lock-arc" style="--year-progress: 38"></div>
               <div class="lock-copy"><strong>School</strong><span>96 days</span></div>
             </div>
