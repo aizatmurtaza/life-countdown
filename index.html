@@ -680,13 +680,30 @@
       font-size: 20px;
     }
 
-    .widget.large .moments {
+    .primary-countdown {
       margin-top: 22px;
+    }
+
+    .primary-countdown .event-title {
+      font-size: 36px;
+    }
+
+    .primary-countdown .event-time {
+      font-size: 17px;
+    }
+
+    .widget.large .moments {
+      margin-top: 8px;
+    }
+
+    .next-kicker {
+      margin-top: 22px;
+      margin-bottom: 0;
     }
 
     .widget.large .moment {
       display: block;
-      padding: 11px 0;
+      padding: 10px 0;
     }
 
     .widget.large .moment:last-child {
@@ -1021,17 +1038,18 @@
             <div class="widget large is-ambient">
               <div class="large-header">
                 <div>
-                  <p class="event-kicker">Upcoming</p>
-                  <p class="event-title">Life moments</p>
-                  <p class="event-detail">Nearest dates at a glance</p>
+                  <p class="event-kicker">Next</p>
+                  <p class="event-detail">Created countdown</p>
                 </div>
-                <div class="mini-ring" data-value="34%"></div>
+                <div class="mini-ring" data-value="62%"></div>
               </div>
+              <div class="primary-countdown" style="--event-progress: 62">
+                <p class="event-title">Maya turns 8</p>
+                <p class="event-time">42 days</p>
+                <div class="large-event-rail"><span></span></div>
+              </div>
+              <p class="event-kicker next-kicker">Next after</p>
               <div class="moments">
-                <div class="moment" style="--event-progress: 62">
-                  <div class="moment-main"><strong>Maya turns 8</strong><span>Birthday · 42 days</span></div>
-                  <div class="large-event-rail"><span></span></div>
-                </div>
                 <div class="moment" style="--event-progress: 23">
                   <div class="moment-main"><strong>Kyoto</strong><span>Trip · 4 months</span></div>
                   <div class="large-event-rail"><span></span></div>
