@@ -599,13 +599,15 @@
     }
 
     .widget.is-ambient .event-rail span,
-    .widget.is-ambient .rail span {
+    .widget.is-ambient .rail span,
+    .widget.is-ambient .large-event-rail span {
       position: relative;
       overflow: hidden;
     }
 
     .widget.is-ambient .event-rail span::after,
-    .widget.is-ambient .rail span::after {
+    .widget.is-ambient .rail span::after,
+    .widget.is-ambient .large-event-rail span::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -683,11 +685,28 @@
     }
 
     .widget.large .moment {
-      padding: 13px 0;
+      display: block;
+      padding: 11px 0;
     }
 
     .widget.large .moment:last-child {
       padding-bottom: 3px;
+    }
+
+    .large-event-rail {
+      height: 3px;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--track);
+    }
+
+    .large-event-rail span {
+      display: block;
+      width: calc(var(--event-progress) * 1%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--fill);
     }
 
     .lock-arc {
@@ -761,7 +780,8 @@
       .widget.is-ambient .event-orbit,
       .widget.is-ambient .lock-arc,
       .widget.is-ambient .event-rail span::after,
-      .widget.is-ambient .rail span::after {
+      .widget.is-ambient .rail span::after,
+      .widget.is-ambient .large-event-rail span::after {
         animation: none;
       }
     }
@@ -1007,9 +1027,18 @@
                 <div class="mini-ring" data-value="34%"></div>
               </div>
               <div class="moments">
-                <div class="moment"><div class="moment-main"><strong>Maya turns 8</strong><span>Birthday · 42 days</span></div></div>
-                <div class="moment"><div class="moment-main"><strong>Kyoto</strong><span>Trip · 4 months</span></div></div>
-                <div class="moment"><div class="moment-main"><strong>First day of school</strong><span>School · 96 days</span></div></div>
+                <div class="moment" style="--event-progress: 62">
+                  <div class="moment-main"><strong>Maya turns 8</strong><span>Birthday · 42 days</span></div>
+                  <div class="large-event-rail"><span></span></div>
+                </div>
+                <div class="moment" style="--event-progress: 23">
+                  <div class="moment-main"><strong>Kyoto</strong><span>Trip · 4 months</span></div>
+                  <div class="large-event-rail"><span></span></div>
+                </div>
+                <div class="moment" style="--event-progress: 38">
+                  <div class="moment-main"><strong>First day of school</strong><span>School · 96 days</span></div>
+                  <div class="large-event-rail"><span></span></div>
+                </div>
               </div>
             </div>
           </article>
