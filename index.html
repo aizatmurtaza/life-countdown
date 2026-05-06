@@ -91,7 +91,7 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 500;
-      letter-spacing: 0.02em;
+      letter-spacing: 0;
       text-align: center;
     }
 
@@ -286,7 +286,7 @@
       color: var(--muted);
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.04em;
+      letter-spacing: 0;
       text-transform: uppercase;
     }
 
@@ -313,7 +313,7 @@
     }
 
     .moment-progress::before {
-      content: attr(data-days);
+      content: attr(data-value);
       display: grid;
       width: 32px;
       aspect-ratio: 1;
@@ -349,7 +349,7 @@
       aspect-ratio: 1;
       margin: 0 auto 25px;
       border-radius: 50%;
-      background: conic-gradient(var(--fill) 22%, var(--track) 0);
+      background: conic-gradient(var(--fill) 23%, var(--track) 0);
     }
 
     .share-mark::before {
@@ -555,7 +555,7 @@
       color: var(--muted);
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.03em;
+      letter-spacing: 0;
       text-transform: uppercase;
     }
 
@@ -626,7 +626,7 @@
     }
 
     .event-orbit::before {
-      content: attr(data-time);
+      content: attr(data-value);
       display: grid;
       width: 68px;
       aspect-ratio: 1;
@@ -713,7 +713,7 @@
       width: 28px;
       aspect-ratio: 1;
       border-radius: 50%;
-      background: conic-gradient(var(--fill) calc(var(--year-progress, 34) * 1%), var(--track) 0);
+      background: conic-gradient(var(--fill) calc(var(--event-progress, var(--year-progress, 34)) * 1%), var(--track) 0);
     }
 
     .lock-arc::before {
@@ -887,12 +887,12 @@
               <p class="section-title">Soon</p>
               <div class="moments">
                 <div class="moment">
-                  <div class="moment-main"><strong>Mom's birthday</strong><span>42 days</span></div>
-                  <div class="moment-progress" style="--event-progress: 62" data-days="42d"></div>
+                  <div class="moment-main"><strong>Maya turns 8</strong><span>Birthday · 42 days</span></div>
+                  <div class="moment-progress" style="--event-progress: 62" data-value="62%"></div>
                 </div>
                 <div class="moment">
-                  <div class="moment-main"><strong>Tokyo</strong><span>4 months</span></div>
-                  <div class="moment-progress" style="--event-progress: 22" data-days="4m"></div>
+                  <div class="moment-main"><strong>First day of school</strong><span>School · 96 days</span></div>
+                  <div class="moment-progress" style="--event-progress: 38" data-value="38%"></div>
                 </div>
               </div>
             </div>
@@ -915,24 +915,24 @@
               <p class="section-title">Soon</p>
               <div class="moments">
                 <div class="moment">
-                  <div class="moment-main"><strong>Mom's birthday</strong><span>Annual</span></div>
+                  <div class="moment-main"><strong>Maya turns 8</strong><span>Birthday</span></div>
                   <div class="moment-meta">42 days</div>
                 </div>
                 <div class="moment">
-                  <div class="moment-main"><strong>Tokyo</strong><span>One time</span></div>
-                  <div class="moment-meta">4 months</div>
+                  <div class="moment-main"><strong>First day of school</strong><span>School</span></div>
+                  <div class="moment-meta">96 days</div>
                 </div>
               </div>
 
               <p class="section-title">Later</p>
               <div class="moments">
                 <div class="moment">
-                  <div class="moment-main"><strong>Anniversary</strong><span>Annual</span></div>
-                  <div class="moment-meta">8 months</div>
+                  <div class="moment-main"><strong>Kyoto</strong><span>Trip</span></div>
+                  <div class="moment-meta">4 months</div>
                 </div>
                 <div class="moment">
-                  <div class="moment-main"><strong>Summer</strong><span>One time</span></div>
-                  <div class="moment-meta">1 year</div>
+                  <div class="moment-main"><strong>Anniversary</strong><span>Annual</span></div>
+                  <div class="moment-meta">8 months</div>
                 </div>
               </div>
             </div>
@@ -955,7 +955,7 @@
               <div class="share-preview">
                 <div class="share-card">
                   <div class="share-mark"></div>
-                  <h2>Tokyo</h2>
+                  <h2>Kyoto</h2>
                   <p>4 months</p>
                 </div>
               </div>
@@ -998,6 +998,7 @@
                 <p class="event-title">Kyoto</p>
                 <p class="event-time">4 months</p>
                 <p class="event-detail">Spring break</p>
+                <div class="event-rail"><span></span></div>
               </div>
             </div>
           </article>
@@ -1011,7 +1012,7 @@
                 <p class="event-time">96 days</p>
                 <p class="event-detail">Monday, August 10</p>
               </div>
-              <div class="event-orbit" style="--event-progress: 38" data-time="38%"></div>
+              <div class="event-orbit" style="--event-progress: 38" data-value="38%"></div>
             </div>
           </article>
 
@@ -1046,7 +1047,7 @@
           <article class="span-wide">
             <p class="mock-label">Lock · accessoryRectangular</p>
             <div class="widget lock is-ambient">
-              <div class="lock-arc" style="--year-progress: 38"></div>
+              <div class="lock-arc" style="--event-progress: 38"></div>
               <div class="lock-copy"><strong>School</strong><span>96 days</span></div>
             </div>
           </article>
