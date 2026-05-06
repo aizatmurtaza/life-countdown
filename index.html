@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Life Countdown Prototype</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f0e8;
+      --surface: #fbf8f1;
+      --surface-soft: #eee8dd;
+      --ink: #24231f;
+      --muted: #777166;
+      --faint: #cfc7b9;
+      --line: rgba(36, 35, 31, 0.12);
+      --track: rgba(36, 35, 31, 0.11);
+      --fill: #35322c;
+      --shadow: 0 28px 70px rgba(42, 37, 30, 0.16);
+      --serif: ui-serif, "New York", "Iowan Old Style", Georgia, serif;
+      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.48), transparent 46%),
+        var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    .board {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 44px 36px 56px;
+    }
+
+    .intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 34px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 540px;
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 74px);
+      font-weight: 400;
+      line-height: 0.94;
+    }
+
+    .intro p {
+      width: min(360px, 100%);
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 34px;
+      align-items: start;
+    }
+
+    .phones {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 22px;
+      align-items: start;
+    }
+
+    .mock-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 312px;
+      aspect-ratio: 390 / 844;
+      margin: 0 auto;
+      padding: 12px;
+      border-radius: 43px;
+      background: #24231f;
+      box-shadow: var(--shadow);
+    }
+
+    .screen {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 33px;
+      background: var(--surface);
+      padding: 22px 22px 24px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 18px;
+      margin-bottom: 22px;
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot, .pill {
+      display: block;
+      background: currentColor;
+      opacity: 0.8;
+    }
+
+    .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+    }
+
+    .pill {
+      width: 16px;
+      height: 7px;
+      border-radius: 999px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .title {
+      margin: 5px 0 0;
+      font-family: var(--serif);
+      font-size: 33px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .icon-button {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .year-orbit {
+      position: relative;
+      display: grid;
+      width: min(220px, 82%);
+      aspect-ratio: 1;
+      place-items: center;
+      margin: 20px auto 28px;
+      border-radius: 50%;
+      background:
+        conic-gradient(var(--fill) calc(var(--year-progress, 34) * 1%), var(--track) 0);
+    }
+
+    .year-orbit::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .year-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 27px;
+      border: 1px solid rgba(36,35,31,0.07);
+      border-radius: 50%;
+    }
+
+    .year-copy {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .year-copy strong {
+      display: block;
+      font-family: var(--serif);
+      font-size: 43px;
+      font-weight: 400;
+      line-height: 0.95;
+    }
+
+    .year-copy span {
+      display: block;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .rails {
+      display: grid;
+      gap: 15px;
+    }
+
+    .rail-row {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .rail-label {
+      min-width: 0;
+    }
+
+    .rail-label strong,
+    .moment-main strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 550;
+      line-height: 1.15;
+    }
+
+    .rail-label span,
+    .moment-main span,
+    .moment-meta {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .rail {
+      height: 4px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--track);
+    }
+
+    .rail span {
+      display: block;
+      width: calc(var(--progress) * 1%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--fill);
+      transition: width 700ms ease;
+    }
+
+    .section-title {
+      margin: 30px 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .moments {
+      border-top: 1px solid var(--line);
+    }
+
+    .moment {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .moment-progress {
+      display: grid;
+      width: 42px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--fill) calc(var(--event-progress) * 1%), var(--track) 0);
+    }
+
+    .moment-progress::before {
+      content: attr(data-days);
+      display: grid;
+      width: 32px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .screen.moments-view .section-title {
+      margin-top: 18px;
+    }
+
+    .share-preview {
+      display: grid;
+      aspect-ratio: 1;
+      place-items: center;
+      margin-top: 32px;
+      border: 1px solid var(--line);
+      background: #f6f1e8;
+      padding: 24px;
+    }
+
+    .share-card {
+      text-align: center;
+    }
+
+    .share-mark {
+      position: relative;
+      width: 118px;
+      aspect-ratio: 1;
+      margin: 0 auto 25px;
+      border-radius: 50%;
+      background: conic-gradient(var(--fill) 22%, var(--track) 0);
+    }
+
+    .share-mark::before {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: 50%;
+      background: #f6f1e8;
+    }
+
+    .share-card h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 42px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .share-card p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .segmented {
+      display: flex;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      gap: 2px;
+    }
+
+    .segmented button {
+      min-width: 34px;
+      height: 27px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .segmented button:first-child {
+      background: var(--surface-soft);
+      color: var(--ink);
+    }
+
+    .swatches {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--swatch);
+    }
+
+    .widgets {
+      display: grid;
+      gap: 18px;
+      justify-items: center;
+    }
+
+    .widget-grid {
+      display: grid;
+      grid-template-columns: 158px 158px;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .span-wide {
+      grid-column: 1 / -1;
+    }
+
+    .widget {
+      border: 1px solid rgba(36,35,31,0.08);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: 0 18px 42px rgba(42, 37, 30, 0.08);
+    }
+
+    .widget.small {
+      display: grid;
+      width: 158px;
+      height: 158px;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .widget.medium {
+      width: 332px;
+      height: 158px;
+      padding: 22px;
+    }
+
+    .widget.large {
+      width: 332px;
+      height: 332px;
+      padding: 24px;
+    }
+
+    .widget.lock {
+      display: flex;
+      width: 160px;
+      height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      justify-self: center;
+      border-radius: 18px;
+      padding: 10px 16px;
+      background: rgba(251,248,241,0.72);
+      backdrop-filter: blur(20px);
+    }
+
+    .mini-ring {
+      display: grid;
+      width: 74px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--fill) calc(var(--year-progress, 34) * 1%), var(--track) 0);
+    }
+
+    .mini-ring::before {
+      content: attr(data-value);
+      display: grid;
+      width: 58px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface);
+      font-family: var(--serif);
+      font-size: 22px;
+    }
+
+    .widget-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .widget-sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .event-widget {
+      width: 100%;
+    }
+
+    .event-kicker {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .event-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 0.98;
+    }
+
+    .event-time {
+      margin: 9px 0 0;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 550;
+    }
+
+    .event-detail {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .event-rail {
+      height: 3px;
+      margin-top: 22px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--track);
+    }
+
+    .event-rail span {
+      display: block;
+      width: calc(var(--event-progress) * 1%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--fill);
+    }
+
+    .event-orbit {
+      display: grid;
+      width: 86px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--fill) calc(var(--event-progress) * 1%), var(--track) 0);
+    }
+
+    .event-orbit::before {
+      content: attr(data-time);
+      display: grid;
+      width: 68px;
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 650;
+      text-align: center;
+    }
+
+    .widget.medium {
+      display: grid;
+      grid-template-columns: 106px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .widget.medium.event-medium {
+      grid-template-columns: 1fr 92px;
+    }
+
+    .widget.medium .mini-ring {
+      width: 94px;
+    }
+
+    .widget.medium .mini-ring::before {
+      width: 76px;
+    }
+
+    .widget .rails {
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .large-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .widget.large .mini-ring {
+      width: 76px;
+      flex: 0 0 auto;
+    }
+
+    .widget.large .mini-ring::before {
+      width: 60px;
+      font-size: 20px;
+    }
+
+    .widget.large .moments {
+      margin-top: 20px;
+    }
+
+    .lock-arc {
+      width: 28px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: conic-gradient(var(--fill) calc(var(--year-progress, 34) * 1%), var(--track) 0);
+    }
+
+    .lock-arc::before {
+      content: "";
+      display: block;
+      width: 20px;
+      aspect-ratio: 1;
+      margin: 4px;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .lock-copy strong {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.05;
+    }
+
+    .lock-copy span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    @media (max-width: 1160px) {
+      .stage {
+        grid-template-columns: 1fr;
+      }
+
+      .widgets {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .board {
+        padding: 28px 18px 42px;
+      }
+
+      .intro {
+        display: block;
+      }
+
+      .intro p {
+        margin-top: 16px;
+      }
+
+      .phones {
+        grid-template-columns: 1fr;
+      }
+
+      .phone {
+        max-width: 360px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .widget-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .span-wide {
+        grid-column: auto;
+      }
+
+      .widget.small,
+      .widget.medium,
+      .widget.large {
+        width: min(332px, calc(100vw - 36px));
+      }
+
+      .widget.small {
+        height: min(332px, calc(100vw - 36px));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Life Countdown</h1>
+      <p>A quiet prototype for seeing time pass. Warm neutrals, soft type, continuous progress, and only the nearest moments in view.</p>
+    </section>
+
+    <section class="stage">
+      <div class="phones" aria-label="App screens">
+        <article>
+          <p class="mock-label">Now</p>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span class="status-icons"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="pill"></i></span></div>
+              <div class="topbar">
+                <div>
+                  <p class="eyebrow" id="today-label">Tuesday, May 5</p>
+                  <p class="title">Now</p>
+                </div>
+                <button class="icon-button" aria-label="Add moment">+</button>
+              </div>
+
+              <div class="year-orbit" aria-label="Year progress">
+                <div class="year-copy">
+                  <strong id="year-label">2026</strong>
+                  <span><b class="js-year">34</b>% elapsed</span>
+                </div>
+              </div>
+
+              <div class="rails">
+                <div class="rail-row">
+                  <div class="rail-label"><strong>Today</strong><span id="day-copy">Halfway through</span></div>
+                  <div class="rail" aria-label="Today progress"><span class="js-day-rail"></span></div>
+                </div>
+                <div class="rail-row">
+                  <div class="rail-label"><strong>Week</strong><span><b class="js-week">31</b>% elapsed</span></div>
+                  <div class="rail" aria-label="Week progress"><span class="js-week-rail"></span></div>
+                </div>
+                <div class="rail-row">
+                  <div class="rail-label"><strong>Month</strong><span><b class="js-month">16</b>% elapsed</span></div>
+                  <div class="rail" aria-label="Month progress"><span class="js-month-rail"></span></div>
+                </div>
+              </div>
+
+              <p class="section-title">Soon</p>
+              <div class="moments">
+                <div class="moment">
+                  <div class="moment-main"><strong>Mom's birthday</strong><span>42 days</span></div>
+                  <div class="moment-progress" style="--event-progress: 62" data-days="42d"></div>
+                </div>
+                <div class="moment">
+                  <div class="moment-main"><strong>Tokyo</strong><span>4 months</span></div>
+                  <div class="moment-progress" style="--event-progress: 22" data-days="4m"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article>
+          <p class="mock-label">Moments</p>
+          <div class="phone">
+            <div class="screen moments-view">
+              <div class="status"><span>9:41</span><span class="status-icons"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="pill"></i></span></div>
+              <div class="topbar">
+                <div>
+                  <p class="eyebrow">Kept locally</p>
+                  <p class="title">Moments</p>
+                </div>
+                <button class="icon-button" aria-label="Add moment">+</button>
+              </div>
+
+              <p class="section-title">Soon</p>
+              <div class="moments">
+                <div class="moment">
+                  <div class="moment-main"><strong>Mom's birthday</strong><span>Annual</span></div>
+                  <div class="moment-meta">42 days</div>
+                </div>
+                <div class="moment">
+                  <div class="moment-main"><strong>Tokyo</strong><span>One time</span></div>
+                  <div class="moment-meta">4 months</div>
+                </div>
+              </div>
+
+              <p class="section-title">Later</p>
+              <div class="moments">
+                <div class="moment">
+                  <div class="moment-main"><strong>Anniversary</strong><span>Annual</span></div>
+                  <div class="moment-meta">8 months</div>
+                </div>
+                <div class="moment">
+                  <div class="moment-main"><strong>Summer</strong><span>One time</span></div>
+                  <div class="moment-meta">1 year</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article>
+          <p class="mock-label">Share</p>
+          <div class="phone">
+            <div class="screen">
+              <div class="status"><span>9:41</span><span class="status-icons"><i class="dot"></i><i class="dot"></i><i class="dot"></i><i class="pill"></i></span></div>
+              <div class="topbar">
+                <div>
+                  <p class="eyebrow">Snapshot</p>
+                  <p class="title">Share</p>
+                </div>
+                <button class="icon-button" aria-label="Share">↗</button>
+              </div>
+
+              <div class="share-preview">
+                <div class="share-card">
+                  <div class="share-mark"></div>
+                  <h2>Tokyo</h2>
+                  <p>4 months</p>
+                </div>
+              </div>
+
+              <div class="controls">
+                <div class="segmented" aria-label="Export size">
+                  <button>1:1</button>
+                  <button>4:5</button>
+                </div>
+                <div class="swatches" aria-label="Background tones">
+                  <span class="swatch" style="--swatch: #fbf8f1"></span>
+                  <span class="swatch" style="--swatch: #eee8dd"></span>
+                  <span class="swatch" style="--swatch: #24231f"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <aside class="widgets" aria-label="Widget previews">
+        <div class="widget-grid">
+          <article>
+            <p class="mock-label">Small · systemSmall</p>
+            <div class="widget small">
+              <div class="event-widget" style="--event-progress: 62">
+                <p class="event-kicker">Birthday</p>
+                <p class="event-title">Maya turns 8</p>
+                <p class="event-time">42 days</p>
+                <div class="event-rail"><span></span></div>
+              </div>
+            </div>
+          </article>
+
+          <article>
+            <p class="mock-label">Small · systemSmall</p>
+            <div class="widget small">
+              <div class="event-widget" style="--event-progress: 23">
+                <p class="event-kicker">Trip</p>
+                <p class="event-title">Kyoto</p>
+                <p class="event-time">4 months</p>
+                <p class="event-detail">Spring break</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="span-wide">
+            <p class="mock-label">Medium · systemMedium</p>
+            <div class="widget medium event-medium">
+              <div>
+                <p class="event-kicker">School</p>
+                <p class="event-title">First day of school</p>
+                <p class="event-time">96 days</p>
+                <p class="event-detail">Monday, August 10</p>
+              </div>
+              <div class="event-orbit" style="--event-progress: 38" data-time="96d"></div>
+            </div>
+          </article>
+
+          <article class="span-wide">
+            <p class="mock-label">Large · systemLarge</p>
+            <div class="widget large">
+              <div class="large-header">
+                <div>
+                  <p class="event-kicker">Upcoming</p>
+                  <p class="event-title">Life moments</p>
+                  <p class="event-detail">Nearest dates at a glance</p>
+                </div>
+                <div class="mini-ring" data-value="34%"></div>
+              </div>
+              <div class="moments">
+                <div class="moment"><div class="moment-main"><strong>Maya turns 8</strong><span>Birthday · 42 days</span></div></div>
+                <div class="moment"><div class="moment-main"><strong>Kyoto</strong><span>Trip · 4 months</span></div></div>
+                <div class="moment"><div class="moment-main"><strong>First day of school</strong><span>School · 96 days</span></div></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="span-wide">
+            <p class="mock-label">Lock · accessoryRectangular</p>
+            <div class="widget lock">
+              <div class="lock-arc" style="--year-progress: 38"></div>
+              <div class="lock-copy"><strong>School</strong><span>96 days</span></div>
+            </div>
+          </article>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const fmt = new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric" });
+
+    function percentBetween(start, end, now) {
+      return Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
+    }
+
+    function updateTime() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const dayStart = new Date(year, now.getMonth(), now.getDate());
+      const dayEnd = new Date(year, now.getMonth(), now.getDate() + 1);
+      const weekStart = new Date(dayStart);
+      weekStart.setDate(dayStart.getDate() - ((dayStart.getDay() + 6) % 7));
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 7);
+      const monthStart = new Date(year, now.getMonth(), 1);
+      const monthEnd = new Date(year, now.getMonth() + 1, 1);
+      const yearStart = new Date(year, 0, 1);
+      const yearEnd = new Date(year + 1, 0, 1);
+
+      const day = percentBetween(dayStart, dayEnd, now);
+      const week = percentBetween(weekStart, weekEnd, now);
+      const month = percentBetween(monthStart, monthEnd, now);
+      const yearProgress = percentBetween(yearStart, yearEnd, now);
+
+      root.style.setProperty("--year-progress", yearProgress.toFixed(3));
+      document.querySelectorAll(".js-day-rail").forEach(el => el.parentElement.style.setProperty("--progress", day.toFixed(3)));
+      document.querySelectorAll(".js-week-rail").forEach(el => el.parentElement.style.setProperty("--progress", week.toFixed(3)));
+      document.querySelectorAll(".js-month-rail").forEach(el => el.parentElement.style.setProperty("--progress", month.toFixed(3)));
+      document.querySelectorAll(".js-day").forEach(el => el.textContent = Math.round(day));
+      document.querySelectorAll(".js-week").forEach(el => el.textContent = Math.round(week));
+      document.querySelectorAll(".js-month").forEach(el => el.textContent = Math.round(month));
+      document.querySelectorAll(".js-year").forEach(el => el.textContent = Math.round(yearProgress));
+      document.getElementById("year-label").textContent = year;
+      document.getElementById("today-label").textContent = fmt.format(now);
+      document.getElementById("day-copy").textContent = day < 45 ? "Still opening" : day < 65 ? "Halfway through" : "Settling down";
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
