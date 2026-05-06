@@ -504,7 +504,7 @@
       aspect-ratio: 1;
       place-items: center;
       border-radius: 50%;
-      background: conic-gradient(var(--fill) calc(var(--year-progress, 34) * 1%), var(--track) 0);
+      background: conic-gradient(var(--fill) calc(var(--event-progress, var(--year-progress, 34)) * 1%), var(--track) 0);
     }
 
     .widget.is-ambient .mini-ring,
@@ -680,25 +680,8 @@
       font-size: 20px;
     }
 
-    .primary-countdown {
-      margin-top: 22px;
-    }
-
-    .primary-countdown .event-title {
-      font-size: 36px;
-    }
-
-    .primary-countdown .event-time {
-      font-size: 17px;
-    }
-
     .widget.large .moments {
-      margin-top: 8px;
-    }
-
-    .next-kicker {
-      margin-top: 22px;
-      margin-bottom: 0;
+      margin-top: 24px;
     }
 
     .widget.large .moment {
@@ -1036,19 +1019,15 @@
           <article class="span-wide">
             <p class="mock-label">Large · systemLarge</p>
             <div class="widget large is-ambient">
-              <div class="large-header">
+              <div class="large-header" style="--event-progress: 62">
                 <div>
-                  <p class="event-kicker">Next</p>
-                  <p class="event-detail">Created countdown</p>
+                  <p class="event-kicker">Birthday</p>
+                  <p class="event-title">Maya turns 8</p>
+                  <p class="event-time">42 days</p>
                 </div>
                 <div class="mini-ring" data-value="62%"></div>
               </div>
-              <div class="primary-countdown" style="--event-progress: 62">
-                <p class="event-title">Maya turns 8</p>
-                <p class="event-time">42 days</p>
-                <div class="large-event-rail"><span></span></div>
-              </div>
-              <p class="event-kicker next-kicker">Next after</p>
+              <div class="large-event-rail" style="--event-progress: 62"><span></span></div>
               <div class="moments">
                 <div class="moment" style="--event-progress: 23">
                   <div class="moment-main"><strong>Kyoto</strong><span>Trip · 4 months</span></div>
